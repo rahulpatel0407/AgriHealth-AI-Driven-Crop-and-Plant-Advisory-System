@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login — AgriHealth AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --leaf: #3B6D11;
+      --leaf-light: #639922;
+      --leaf-pale: #EAF3DE;
+      --soil: #633806;
+      --soil-light: #BA7517;
+      --soil-pale: #FAEEDA;
+      --sky: #185FA5;
+      --sky-pale: #E6F1FB;
+      --danger: #E24B4A;
+      --danger-pale: #FCEBEB;
+      --text: #1a1a1a;
+      --muted: #6b7280;
+      --border: rgba(0,0,0,0.1);
+      --surface: #f5f5f2;
+      --card: #ffffff;
+      --bg: #fafaf7;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: linear-gradient(135deg, var(--sky-pale) 0%, var(--leaf-pale) 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .login-container {
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .login-card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 2.5rem 2rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      border: 0.5px solid var(--border);
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .login-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 1.5rem;
+    }
+
+    .login-logo-icon {
+      width: 45px;
+      height: 45px;
+      background: var(--leaf);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 20px;
+    }
+
+    .login-logo-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.3px;
+    }
+
+    .login-logo-text span {
+      color: var(--leaf);
+    }
+
+    .login-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      font-weight: 700;Email or Username
+      
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+
+    .login-subtitle {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 0.5px solid var(--border);
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      background: var(--surface);
+      color: var(--text);
+      transition: all 0.15s;
+    }
+
+    .form-input:focus {
+      outline: none;
+      background: var(--card);
+      border-color: var(--leaf);
+      box-shadow: 0 0 0 2px var(--leaf-pale);
+    }
+
+    .form-input::placeholder {
+      color: var(--muted);
+    }
+
+    .form-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.75rem;
+      font-size: 13px;
+    }
+
+    .checkbox-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+
+    .checkbox-input {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--leaf);
+      cursor: pointer;
+    }
+
+    .checkbox-label {
+      cursor: pointer;
+      color: var(--text);
+      font-weight: 400;
+    }
+
+    .forgot-password {
+      color: var(--leaf);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.15s;
+    }
+
+    .forgot-password:hover {
+      color: var(--leaf-light);
+    }
+
+    .login-button {
+      width: 100%;
+      padding: 11px 16px;
+      background: var(--leaf);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      transition: all 0.15s;
+      margin-bottom: 1rem;
+    }
+
+    .login-button:hover {
+      background: var(--leaf-light);
+      box-shadow: 0 4px 12px rgba(59, 109, 17, 0.2);
+    }
+
+    .login-button:active {
+      transform: scale(0.98);
+    }
+
+    .login-divider {
+      text-align: center;
+      margin: 1.5rem 0;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .login-divider::before,
+    .login-divider::after {
+      content: '';
+      display: inline-block;
+      width: 35%;
+      height: 0.5px;
+      background: var(--border);
+      vertical-align: middle;
+    }
+
+    .login-divider::before {
+      margin-right: 0.75rem;
+    }
+
+    .login-divider::after {
+      margin-left: 0.75rem;
+    }
+
+    .signup-link {
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .signup-link a {
+      color: var(--leaf);
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.15s;
+    }
+
+    .signup-link a:hover {
+      color: var(--leaf-light);
+      text-decoration: underline;
+    }
+
+    .error-message {
+      display: none;
+      background: var(--danger-pale);
+      color: var(--danger);
+      padding: 10px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      margin-bottom: 1rem;
+      border: 0.5px solid var(--danger);
+    }
+
+    .error-message.show {
+      display: block;
+    }
+
+    .form-input.error {
+      border-color: var(--danger);
+    }
+
+    @media (max-width: 480px) {
+      .login-card {
+        padding: 2rem 1.5rem;
+      }
+
+      .login-title {
+        font-size: 24px;
+      }
+
+      .login-logo-text {
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-card">
+      <div class="login-header">
+        <div class="login-logo">
+          <div class="login-logo-icon"><img src="logo.png" alt="AgriHealth AI Logo" style="width:100%;height:100%;object-fit:contain;"></div>
+          <div class="login-logo-text">Agri<span>Health</span></div>
+        </div>
+        <h1 class="login-title">Welcome Back</h1>
+        <p class="login-subtitle">Sign in to your AgriHealth account</p>
+      </div>
+
+      <form id="loginForm" class="login-form">
+        <div class="error-message" id="errorMessage"></div>
+
+        <div class="form-group">
+          <label class="form-label" for="email">Email or Username</label>
+          <input
+            type="text"
+            id="email"
+            name="email"
+            class="form-input"
+            placeholder="Enter your email or username"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            class="form-input"
+            placeholder="Enter your password"
+            required
+          />
+        </div>
+
+        <div class="form-row">
+          <label class="checkbox-wrapper">
+            <input type="checkbox" id="remember" class="checkbox-input" />
+            <span class="checkbox-label">Remember me</span>
+          </label>
+          <a href="#" class="forgot-password">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="login-button">Sign In</button>
+
+        <div class="login-divider">or</div>
+
+        <div class="signup-link">
+          Don't have an account? <a href="#">Sign up here</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const loginForm = document.getElementById('loginForm');
+    const errorMessage = document.getElementById('errorMessage');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+
+    loginForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      
+      // Clear previous error
+      errorMessage.classList.remove('show');
+      emailInput.classList.remove('error');
+      passwordInput.classList.remove('error');
+
+      const email = emailInput.value.trim();
+      const password = passwordInput.value.trim();
+
+      // Simple validation
+      if (!email || !password) {
+        errorMessage.textContent = 'Please fill in all fields';
+        errorMessage.classList.add('show');
+        return;
+      }
+
+      if (email.includes('@')) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          errorMessage.textContent = 'Please enter a valid email address';
+          errorMessage.classList.add('show');
+          emailInput.classList.add('error');
+          return;
+        }
+      }
+
+      if (password.length < 6) {
+        errorMessage.textContent = 'Password must be at least 6 characters';
+        errorMessage.classList.add('show');
+        passwordInput.classList.add('error');
+        return;
+      }
+
+      // Simulate login (in real scenario, send to server)
+      console.log('Login attempt:', { email, password });
+      errorMessage.textContent = 'Login successful! Redirecting...';
+      errorMessage.style.background = 'var(--leaf-pale)';
+      errorMessage.style.color = 'var(--leaf)';
+      errorMessage.style.borderColor = 'var(--leaf)';
+      errorMessage.classList.add('show');
+
+      // Simulate redirect after 1.5 seconds
+      setTimeout(() => {
+        window.location.href = 'agrihealth_ai.html';
+      }, 1500);
+    });
+  </script>
+</body>
+</html>
