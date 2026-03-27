@@ -1,5 +1,6 @@
-<!DOCTYPE html>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Phosphor Icons -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
             --primary: #059669;
@@ -23,16 +30,20 @@
             --warning: #f59e0b;
             --info: #3b82f6;
             --border: rgba(148, 163, 184, 0.2);
-            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
-            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.05);
-            --shadow-lg: 0 10px 30px -5px rgba(0,0,0,0.08);
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 10px 30px -5px rgba(0, 0, 0, 0.08);
             --radius-md: 12px;
             --radius-lg: 20px;
             --radius-xl: 28px;
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
             font-family: 'Outfit', sans-serif;
@@ -42,7 +53,7 @@
             display: flex;
             overflow-x: hidden;
             /* Dynamic animated gradient background */
-            background-image: 
+            background-image:
                 radial-gradient(circle at 10% 20%, rgba(16, 185, 129, 0.1) 0%, transparent 40%),
                 radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.15) 0%, transparent 40%);
             background-attachment: fixed;
@@ -75,31 +86,48 @@
         }
 
         .logo-icon {
-            width: 40px; height: 40px;
+            width: 40px;
+            height: 40px;
             background: linear-gradient(135deg, var(--primary-light), var(--primary-dark));
             border-radius: var(--radius-md);
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
             box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
         }
 
         .nav-menu {
-            display: flex; flex-direction: column; gap: 8px; flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
         }
 
         .nav-item {
-            display: flex; align-items: center; gap: 14px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
             padding: 12px 16px;
             border-radius: var(--radius-md);
             color: var(--text-muted);
             text-decoration: none;
-            font-weight: 500; font-size: 15px;
+            font-weight: 500;
+            font-size: 15px;
             transition: var(--transition);
         }
-        .nav-item i { font-size: 20px; }
-        .nav-item:hover {
-            background: rgba(16, 185, 129, 0.05); color: var(--primary); transform: translateX(4px);
+
+        .nav-item i {
+            font-size: 20px;
         }
+
+        .nav-item:hover {
+            background: rgba(16, 185, 129, 0.05);
+            color: var(--primary);
+            transform: translateX(4px);
+        }
+
         .nav-item.active {
             background: linear-gradient(to right, rgba(16, 185, 129, 0.1), transparent);
             color: var(--primary-dark);
@@ -111,12 +139,18 @@
             padding: 12px;
             background: rgba(16, 185, 129, 0.05);
             border-radius: var(--radius-md);
-            font-size: 13px; font-weight: 500;
-            display: flex; align-items: center; gap: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
             color: var(--text-muted);
         }
+
         .status-dot {
-            width: 8px; height: 8px; border-radius: 50%;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
             background: var(--primary);
             box-shadow: 0 0 10px var(--primary);
             animation: pulse 2s infinite;
@@ -132,44 +166,92 @@
 
         /* Header Area */
         .top-header {
-            display: flex; justify-content: space-between; align-items: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 2.5rem;
             animation: fadeInDown 0.6s ease-out;
         }
-        .greeting h1 { font-size: 32px; font-weight: 700; color: var(--text-main); line-height: 1.2;}
-        .greeting p { color: var(--text-muted); font-size: 16px; margin-top: 4px;}
 
-        .user-profile { display: flex; align-items: center; gap: 16px; }
+        .greeting h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-main);
+            line-height: 1.2;
+        }
+
+        .greeting p {
+            color: var(--text-muted);
+            font-size: 16px;
+            margin-top: 4px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
         .action-btn {
-            width: 44px; height: 44px; border-radius: 50%;
-            background: var(--surface-solid); border: 1px solid var(--border);
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; position: relative; font-size: 20px; color: var(--text-main);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--surface-solid);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            font-size: 20px;
+            color: var(--text-main);
             transition: var(--transition);
         }
-        .action-btn:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); color: var(--primary); }
-        .notification-badge {
-            position: absolute; top: 10px; right: 12px;
-            width: 8px; height: 8px; background: var(--danger);
-            border-radius: 50%; border: 2px solid var(--surface-solid);
+
+        .action-btn:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+            color: var(--primary);
         }
+
+        .notification-badge {
+            position: absolute;
+            top: 10px;
+            right: 12px;
+            width: 8px;
+            height: 8px;
+            background: var(--danger);
+            border-radius: 50%;
+            border: 2px solid var(--surface-solid);
+        }
+
         .avatar {
-            width: 48px; height: 48px; border-radius: 50%; object-fit: cover;
-            border: 2px solid var(--primary-light); padding: 2px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary-light);
+            padding: 2px;
             transition: var(--transition);
             cursor: pointer;
         }
-        .avatar:hover { transform: scale(1.05); }
+
+        .avatar:hover {
+            transform: scale(1.05);
+        }
 
         /* Dashboard Grid */
         .dashboard-grid {
-            display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px;
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 24px;
             animation: fadeInUp 0.8s ease-out;
         }
 
         .card {
             background: var(--surface);
-            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.5);
             border-radius: var(--radius-xl);
             padding: 24px;
@@ -178,200 +260,1407 @@
             overflow: hidden;
             position: relative;
         }
-        .card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.8); }
+
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255, 255, 255, 0.8);
+        }
 
         /* Stats Component */
-        .stats-container { grid-column: span 12; display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
-        .stat-card { display: flex; align-items: center; gap: 20px; }
-        .stat-icon {
-            width: 60px; height: 60px; border-radius: var(--radius-lg);
-            display: flex; align-items: center; justify-content: center; font-size: 28px;
+        .stats-container {
+            grid-column: span 12;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
         }
-        .stat-icon.green { background: rgba(16, 185, 129, 0.1); color: var(--primary); }
-        .stat-icon.red { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
-        .stat-icon.yellow { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
-        .stat-icon.blue { background: rgba(59, 130, 246, 0.1); color: var(--info); }
-        
-        .stat-details h3 { font-size: 13px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
-        .stat-details p { font-size: 28px; font-weight: 700; color: var(--text-main); }
-        .stat-trend { font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 4px; margin-top: 4px; }
-        .stat-trend i { font-size: 16px; }
-        .stat-trend.up { color: var(--primary); }
-        .stat-trend.down { color: var(--danger); }
-        .stat-trend.info { color: var(--info); }
+
+        .stat-card {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+
+        .stat-icon.green {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--primary);
+        }
+
+        .stat-icon.red {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .stat-icon.yellow {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .stat-icon.blue {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--info);
+        }
+
+        .stat-details h3 {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .stat-details p {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .stat-trend {
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 4px;
+        }
+
+        .stat-trend i {
+            font-size: 16px;
+        }
+
+        .stat-trend.up {
+            color: var(--primary);
+        }
+
+        .stat-trend.down {
+            color: var(--danger);
+        }
+
+        .stat-trend.info {
+            color: var(--info);
+        }
 
         /* Hero / Scanner Section */
         .scanner-card {
-            grid-column: span 7; display: flex; align-items: center; justify-content: space-between;
+            grid-column: span 7;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
-            color: white; padding: 36px;
+            color: white;
+            padding: 36px;
         }
+
         .scanner-card::after {
-            content: ''; position: absolute; top: -50%; right: -20%;
-            width: 400px; height: 400px; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
-            border-radius: 50%; pointer-events: none;
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
+            border-radius: 50%;
+            pointer-events: none;
         }
-        .scanner-content { position: relative; z-index: 2; max-width: 65%; }
-        
+
+        .scanner-content {
+            position: relative;
+            z-index: 2;
+            max-width: 65%;
+        }
+
         .live-badge {
-            display: inline-flex; align-items: center; gap: 8px;
-            background: rgba(0,0,0,0.2); backdrop-filter: blur(4px);
-            padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(4px);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
         }
-        .scanner-content h2 { font-size: 32px; font-weight: 700; margin-bottom: 12px; line-height: 1.2; }
-        .scanner-content p { font-size: 15px; opacity: 0.9; margin-bottom: 24px; line-height: 1.6; }
-        
+
+        .scanner-content h2 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            line-height: 1.2;
+        }
+
+        .scanner-content p {
+            font-size: 15px;
+            opacity: 0.9;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
         .upload-btn {
-            background: white; color: var(--primary-dark); border: none;
-            padding: 16px 32px; border-radius: var(--radius-xl); font-size: 16px; font-weight: 600;
-            cursor: pointer; display: inline-flex; align-items: center; gap: 10px;
-            transition: var(--transition); box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            background: white;
+            color: var(--primary-dark);
+            border: none;
+            padding: 16px 32px;
+            border-radius: var(--radius-xl);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
-        .upload-btn i { font-size: 20px; }
-        .upload-btn:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 8px 25px rgba(0,0,0,0.2); }
-        
+
+        .upload-btn i {
+            font-size: 20px;
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
         .scanner-visual {
-            position: relative; z-index: 2; width: 140px; height: 140px;
-            display: flex; align-items: center; justify-content: center;
+            position: relative;
+            z-index: 2;
+            width: 140px;
+            height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
+
         .scan-ring {
-            position: absolute; inset: 0; border: 3px dashed rgba(255,255,255,0.4); border-radius: 50%;
+            position: absolute;
+            inset: 0;
+            border: 3px dashed rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
             animation: spin 15s linear infinite;
         }
+
         .scan-ring-inner {
-            position: absolute; inset: 20px; border: 2px solid rgba(255,255,255,0.2); border-radius: 50%;
+            position: absolute;
+            inset: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
             animation: spin 10s linear infinite reverse;
         }
-        .scanner-visual i { font-size: 64px; color: white; filter: drop-shadow(0 0 15px rgba(255,255,255,0.3)); }
+
+        .scanner-visual i {
+            font-size: 64px;
+            color: white;
+            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.3));
+        }
 
         /* AI Advisor Chat */
-        .ai-chat-card { grid-column: span 5; display: flex; flex-direction: column; padding: 0; }
+        .ai-chat-card {
+            grid-column: span 5;
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+        }
+
         .chat-header {
-            padding: 20px 24px; border-bottom: 1px solid var(--border);
-            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .chat-title { font-weight: 700; font-size: 18px; display: flex; align-items: center; gap: 10px; }
-        .chat-title i { color: var(--primary); font-size: 24px; }
+
+        .chat-title {
+            font-weight: 700;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chat-title i {
+            color: var(--primary);
+            font-size: 24px;
+        }
+
         .model-badge {
-            font-size: 11px; background: rgba(16,185,129,0.1); color: var(--primary-dark);
-            padding: 4px 10px; border-radius: 12px; font-weight: 700; border: 1px solid rgba(16,185,129,0.2);
+            font-size: 11px;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--primary-dark);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: 700;
+            border: 1px solid rgba(16, 185, 129, 0.2);
         }
-        
-        .chat-body { flex: 1; padding: 20px 24px; overflow-y: auto; max-height: 280px; display: flex; flex-direction: column; gap: 16px; }
-        .chat-msg { display: flex; gap: 12px; max-width: 85%; animation: fadeIn 0.4s ease-out; }
-        .chat-msg.user { align-self: flex-end; flex-direction: row-reverse; }
+
+        .chat-body {
+            flex: 1;
+            padding: 20px 24px;
+            overflow-y: auto;
+            max-height: 280px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .chat-msg {
+            display: flex;
+            gap: 12px;
+            max-width: 85%;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .chat-msg.user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
         .msg-av {
-            width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 18px; flex-shrink: 0; box-shadow: var(--shadow-sm);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+            box-shadow: var(--shadow-sm);
         }
-        .chat-msg.ai .msg-av { background: rgba(16,185,129,0.1); color: var(--primary); }
-        .chat-msg.user .msg-av { background: var(--surface-solid); color: var(--text-main); }
-        
-        .msg-text {
-            background: var(--surface-solid); padding: 12px 18px; border-radius: 18px; font-size: 14px;
-            line-height: 1.5; box-shadow: var(--shadow-sm); border: 1px solid var(--border);
+
+        .chat-msg.ai .msg-av {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--primary);
+        }
+
+        .chat-msg.user .msg-av {
+            background: var(--surface-solid);
             color: var(--text-main);
         }
-        .chat-msg.ai .msg-text { border-top-left-radius: 4px; }
-        .chat-msg.user .msg-text { background: var(--primary); color: white; border: none; border-top-right-radius: 4px; }
-        
-        .chat-input-area { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; gap: 12px; align-items: center; }
+
+        .msg-text {
+            background: var(--surface-solid);
+            padding: 12px 18px;
+            border-radius: 18px;
+            font-size: 14px;
+            line-height: 1.5;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+        }
+
+        .chat-msg.ai .msg-text {
+            border-top-left-radius: 4px;
+        }
+
+        .chat-msg.user .msg-text {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-top-right-radius: 4px;
+        }
+
+        .chat-input-area {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
         .chat-input-area input {
-            flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 24px; padding: 12px 20px;
-            font-family: inherit; font-size: 14px; outline: none; transition: var(--transition);
+            flex: 1;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 12px 20px;
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            transition: var(--transition);
         }
-        .chat-input-area input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1); }
+
+        .chat-input-area input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
         .chat-send-btn {
-            width: 44px; height: 44px; border-radius: 50%; background: var(--primary); color: white; border: none;
-            cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 20px; transition: var(--transition);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: var(--transition);
         }
-        .chat-send-btn:hover { background: var(--primary-dark); transform: scale(1.05); }
+
+        .chat-send-btn:hover {
+            background: var(--primary-dark);
+            transform: scale(1.05);
+        }
 
         /* Priority Alerts */
-        .alerts-card { grid-column: span 7; }
-        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-        .card-title { font-size: 20px; font-weight: 700; display: flex; align-items: center; gap: 10px; color: var(--text-main); }
-        .card-action { font-size: 14px; color: var(--primary); font-weight: 600; text-decoration: none; transition: var(--transition); }
-        .card-action:hover { text-decoration: underline; }
-        
-        .alert-list { display: flex; flex-direction: column; gap: 16px; }
+        .alerts-card {
+            grid-column: span 7;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-main);
+        }
+
+        .card-action {
+            font-size: 14px;
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .card-action:hover {
+            text-decoration: underline;
+        }
+
+        .alert-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
         .alert-item {
-            display: flex; gap: 16px; padding: 18px; border-radius: var(--radius-md); background: var(--surface-solid);
-            border: 1px solid var(--border); border-left: 4px solid transparent; transition: var(--transition);
-            box-shadow: var(--shadow-sm); cursor: pointer;
+            display: flex;
+            gap: 16px;
+            padding: 18px;
+            border-radius: var(--radius-md);
+            background: var(--surface-solid);
+            border: 1px solid var(--border);
+            border-left: 4px solid transparent;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+            cursor: pointer;
         }
-        .alert-item:hover { transform: translateX(4px); box-shadow: var(--shadow-md); }
-        .alert-item.critical { border-left-color: var(--danger); }
-        .alert-item.warning { border-left-color: var(--warning); }
-        .alert-item.info { border-left-color: var(--info); }
-        
+
+        .alert-item:hover {
+            transform: translateX(4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .alert-item.critical {
+            border-left-color: var(--danger);
+        }
+
+        .alert-item.warning {
+            border-left-color: var(--warning);
+        }
+
+        .alert-item.info {
+            border-left-color: var(--info);
+        }
+
         .alert-icon {
-            width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
-            flex-shrink: 0; font-size: 24px;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 24px;
         }
-        .critical .alert-icon { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
-        .warning .alert-icon { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
-        .info .alert-icon { background: rgba(59, 130, 246, 0.1); color: var(--info); }
-        
-        .alert-content h4 { font-size: 16px; margin-bottom: 4px; color: var(--text-main); font-weight: 600; }
-        .alert-content p { font-size: 14px; color: var(--text-muted); line-height: 1.5; }
+
+        .critical .alert-icon {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .warning .alert-icon {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .info .alert-icon {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--info);
+        }
+
+        .alert-content h4 {
+            font-size: 16px;
+            margin-bottom: 4px;
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        .alert-content p {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
 
         /* Health Score */
-        .health-card { grid-column: span 5; display: flex; flex-direction: column; }
-        .health-ring-container { flex: 1; display: flex; align-items: center; justify-content: center; position: relative; margin: 24px 0; }
-        .health-score-text { position: absolute; text-align: center; display: flex; flex-direction: column; align-items: center;}
-        .health-score-text .score {
-            font-size: 56px; font-weight: 700; line-height: 1;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        .health-card {
+            grid-column: span 5;
+            display: flex;
+            flex-direction: column;
         }
-        .health-score-text .label { font-size: 15px; color: var(--text-muted); font-weight: 600; margin-top: 4px; text-transform: uppercase; letter-spacing: 1px;}
-        
-        .health-legend { display: flex; justify-content: space-between; margin-top: auto; border-top: 1px solid var(--border); padding-top: 20px; }
-        .legend-item { text-align: center; }
-        .legend-val { font-size: 20px; font-weight: 700; color: var(--text-main); }
-        .legend-label { font-size: 13px; color: var(--text-muted); display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 4px; font-weight: 500;}
-        .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
 
-        /* ANIMATIONS */
-        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .health-ring-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin: 24px 0;
+        }
+
+        .health-score-text {
+            position: absolute;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .health-score-text .score {
+  font-size: 56px;
+  font-weight: 700;
+  line-height: 1;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+        .health-score-text .label {
+            font-size: 15px;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .health-legend {
+            display: flex;
+            justify-content: space-between;
+            margin-top: auto;
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
+        }
+
+        .legend-item {
+            text-align: center;
+        }
+
+        .legend-val {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .legend-label {
+            font-size: 13px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        /* CLICK FEEDBACK & TOAST */
+        .action-btn:active {
+            transform: translateY(0) scale(0.95);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .avatar:active {
+            transform: scale(0.95);
+        }
+
+        .nav-item:active {
+            transform: scale(0.98);
+        }
+
+        #toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: var(--text-main);
+            color: #fff;
+            text-align: center;
+            border-radius: var(--radius-xl);
+            padding: 16px 24px;
+            position: fixed;
+            z-index: 1000;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%) translateY(20px);
+            font-size: 15px;
+            font-weight: 500;
+            box-shadow: var(--shadow-lg);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        #toast.show {
+            visibility: visible;
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ANIMATIONS & VIEWS */
+        .page-view {
+            display: none;
+            animation: fadeInUp 0.4s ease-out;
+        }
+
+        .page-view.active-view {
+            display: block;
+        }
+
+        .placeholder-card {
+            background: var(--surface);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: var(--radius-xl);
+            padding: 40px;
+            box-shadow: var(--shadow-lg);
+            text-align: center;
+            margin-top: 24px;
+        }
+
+        .placeholder-card h2 {
+            font-size: 28px;
+            color: var(--text-main);
+            margin-bottom: 12px;
+        }
+
+        .placeholder-card p {
+            color: var(--text-muted);
+            font-size: 16px;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
         @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-            70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+            0% {
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            }
+
+            70% {
+                box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+            }
         }
+
         @keyframes pulse-yellow {
-            0% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.7); }
-            70% { box-shadow: 0 0 0 6px rgba(251, 191, 36, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); }
+            0% {
+                box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.7);
+            }
+
+            70% {
+                box-shadow: 0 0 0 6px rgba(251, 191, 36, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(251, 191, 36, 0);
+            }
         }
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* VIEW HEADERS */
+        .view-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .view-subtitle {
+            font-size: 15px;
+            color: var(--text-muted);
+        }
+
+        .fields-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 24px;
+            animation: fadeInDown 0.6s ease-out;
+        }
+
+        /* BUTTONS */
+        .primary-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+        }
+
+        .primary-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.3);
+        }
+
+        .secondary-btn {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--primary-dark);
+            border: none;
+            padding: 10px;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .secondary-btn:hover {
+            background: rgba(16, 185, 129, 0.2);
+        }
+
+        .w-full {
+            width: 100%;
+        }
+
+        /* MY FIELDS GRID */
+        .fields-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 24px;
+        }
+
+        .map-card {
+            grid-column: span 12;
+            padding: 0;
+            overflow: hidden;
+            height: 400px;
+            display: flex;
+        }
+
+        .field-card {
+            grid-column: span 4;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .field-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .field-header h4 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .crop-tag {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .health-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .health-badge.ok {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--primary-dark);
+        }
+
+        .health-badge.warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .health-badge.critical {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .field-stats {
+            display: flex;
+            justify-content: space-between;
+            background: var(--bg);
+            padding: 12px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+        }
+
+        .f-stat {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .text-info {
+            color: var(--info);
+        }
+
+        .text-warning {
+            color: var(--warning);
+        }
+
+        .text-primary {
+            color: var(--primary);
+        }
+
+        /* MODAL */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: var(--surface-solid);
+            width: 100%;
+            max-width: 500px;
+            border-radius: var(--radius-xl);
+            padding: 32px;
+            box-shadow: var(--shadow-lg);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.show .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .modal-header h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .close-btn:hover {
+            color: var(--text-main);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            font-size: 14px;
+            background: var(--bg);
+            transition: var(--transition);
+            outline: none;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 32px;
+        }
+
+        /* DIAGNOSTICS VIEW */
+        .diag-scanner-card {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .upload-area {
+            border: 2px dashed rgba(16, 185, 129, 0.4);
+            border-radius: var(--radius-xl);
+            padding: 60px 40px;
+            text-align: center;
+            background: rgba(16, 185, 129, 0.02);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .upload-area:hover {
+            background: rgba(16, 185, 129, 0.05);
+            border-color: var(--primary);
+        }
+
+        .upload-icon-ring {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: var(--primary);
+            box-shadow: var(--shadow-md);
+            margin: 0 auto 20px auto;
+        }
+
+        .upload-area h3 {
+            font-size: 20px;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 24px;
+        }
+
+        .scanned-img-thumb {
+            width: 120px;
+            height: 120px;
+            border-radius: var(--radius-md);
+            object-fit: cover;
+            border: 4px solid white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .disease-info h2 {
+            font-size: 24px;
+            color: var(--danger);
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .disease-info p {
+            font-size: 15px;
+            color: var(--text-muted);
+        }
+
+        .rec-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .rec-item {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            padding: 16px;
+            background: var(--bg);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+        }
+
+        .rec-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .rec-item h5 {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .rec-item p {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .history-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px;
+            border-radius: var(--radius-md);
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+
+        .history-item:hover {
+            background: var(--surface-solid);
+        }
+
+        .hist-img {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            flex-shrink: 0;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .hist-details {
+            flex: 1;
+        }
+
+        .hist-details h5 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .hist-details p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
 
         /* RESPONSIVE */
         @media (max-width: 1200px) {
-            .stats-container { grid-template-columns: repeat(2, 1fr); }
-            .scanner-card, .ai-chat-card, .alerts-card, .health-card { grid-column: span 12; }
-            .main-content { padding: 2rem; }
+            .stats-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .scanner-card,
+            .ai-chat-card,
+            .alerts-card,
+            .health-card {
+                grid-column: span 12;
+            }
+
+            .main-content {
+                padding: 2rem;
+            }
         }
 
         @media (max-width: 768px) {
-            body { flex-direction: column; background-image: none; background: var(--bg); }
-            .sidebar { width: 100%; height: auto; position: relative; padding: 1rem 1.5rem; flex-direction: row; align-items: center; border-right: none; border-bottom: 1px solid var(--border); }
-            .nav-menu { flex-direction: row; overflow-x: auto; margin-left: auto; flex: initial; padding-bottom: 4px;}
-            .nav-menu::-webkit-scrollbar { display: none; }
-            .logo { margin-bottom: 0; font-size: 20px;}
-            .logo-icon { width: 32px; height: 32px; font-size: 18px;}
-            .nav-item { padding: 8px 12px; }
-            .nav-item span { display: none; }
-            .sys-status { display: none; }
-            .main-content { padding: 1.5rem; }
-            .stats-container { grid-template-columns: 1fr; }
-            .scanner-card { flex-direction: column; text-align: center; gap: 2rem; padding: 24px;}
-            .scanner-content { max-width: 100%; }
+            body {
+                flex-direction: column;
+                background-image: none;
+                background: var(--bg);
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 1rem 1.5rem;
+                flex-direction: row;
+                align-items: center;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .nav-menu {
+                flex-direction: row;
+                overflow-x: auto;
+                margin-left: auto;
+                flex: initial;
+                padding-bottom: 4px;
+            }
+
+            .nav-menu::-webkit-scrollbar {
+                display: none;
+            }
+
+            .logo {
+                margin-bottom: 0;
+                font-size: 20px;
+            }
+
+            .logo-icon {
+                width: 32px;
+                height: 32px;
+                font-size: 18px;
+            }
+
+            .nav-item {
+                padding: 8px 12px;
+            }
+
+            .nav-item span {
+                display: none;
+            }
+
+            .sys-status {
+                display: none;
+            }
+
+            .main-content {
+                padding: 1.5rem;
+            }
+
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+
+            .scanner-card {
+                flex-direction: column;
+                text-align: center;
+                gap: 2rem;
+                padding: 24px;
+            }
+
+            .scanner-content {
+                max-width: 100%;
+            }
+        }
+
+        /* SETTINGS LAYOUT */
+        .settings-layout {
+            display: flex;
+            gap: 24px;
+            align-items: flex-start;
+        }
+
+        .settings-sidebar {
+            flex: 0 0 250px;
+            background: var(--surface-solid);
+            border-radius: var(--radius-xl);
+            padding: 16px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+        }
+
+        .settings-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .settings-tab {
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: none;
+            background: transparent;
+            text-align: left;
+            width: 100%;
+        }
+
+        .settings-tab i {
+            font-size: 18px;
+        }
+
+        .settings-tab:hover {
+            background: rgba(16, 185, 129, 0.05);
+            color: var(--primary);
+        }
+
+        .settings-tab.active {
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);
+        }
+        
+        .settings-tab.active i {
+            color: white;
+        }
+
+        .settings-content-wrapper {
+            flex: 1;
+            background: var(--surface-solid);
+            border-radius: var(--radius-xl);
+            padding: 32px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            min-height: 500px;
+        }
+
+        .settings-section {
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .settings-section.active {
+            display: block;
+        }
+
+        .settings-section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .setting-group {
+            margin-bottom: 24px;
+        }
+
+        .setting-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        .setting-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .setting-row:last-child {
+            border-bottom: none;
+        }
+        
+        .setting-label-col h4 {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e1;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        input:checked + .toggle-slider {
+            background-color: var(--primary);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+
+        .danger-btn {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border: none;
+            padding: 12px 24px;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+        
+        .danger-btn:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        @media (max-width: 900px) {
+            .settings-layout {
+                flex-direction: column;
+            }
+            .settings-sidebar {
+                width: 100%;
+                flex: auto;
+            }
+            .settings-menu {
+                flex-direction: row;
+                overflow-x: auto;
+            }
+            .settings-tab {
+                white-space: nowrap;
+            }
         }
     </style>
 </head>
+
 <body>
 
     <!-- SIDEBAR -->
@@ -381,12 +1670,18 @@
             AgriHealth AI
         </div>
         <nav class="nav-menu">
-            <a href="#" class="nav-item active"><i class="ph ph-squares-four"></i><span>Dashboard</span></a>
-            <a href="#" class="nav-item"><i class="ph ph-map-trifold"></i><span>My Fields</span></a>
-            <a href="#" class="nav-item"><i class="ph ph-stethoscope"></i><span>Diagnostics</span></a>
-            <a href="#" class="nav-item"><i class="ph ph-users"></i><span>Community</span></a>
-            <a href="#" class="nav-item"><i class="ph ph-chart-line-up"></i><span>Reports & Analytics</span></a>
-            <a href="#" class="nav-item"><i class="ph ph-gear"></i><span>Settings</span></a>
+            <a href="#" class="nav-item active" onclick="setActiveNav(event, this, 'Dashboard')"><i
+                    class="ph ph-squares-four"></i><span>Dashboard</span></a>
+            <a href="#" class="nav-item" onclick="setActiveNav(event, this, 'MyFields')"><i
+                    class="ph ph-map-trifold"></i><span>My Fields</span></a>
+            <a href="#" class="nav-item" onclick="setActiveNav(event, this, 'Diagnostics')"><i
+                    class="ph ph-stethoscope"></i><span>Diagnostics</span></a>
+            <a href="#" class="nav-item" onclick="setActiveNav(event, this, 'Community')"><i
+                    class="ph ph-users"></i><span>Community</span></a>
+            <a href="#" class="nav-item" onclick="setActiveNav(event, this, 'Reports')"><i
+                    class="ph ph-chart-line-up"></i><span>Reports & Analytics</span></a>
+            <a href="#" class="nav-item" onclick="setActiveNav(event, this, 'Settings')"><i
+                    class="ph ph-gear"></i><span>Settings</span></a>
         </nav>
         <div class="sys-status">
             <div class="status-dot"></div> System Online
@@ -402,175 +1697,1100 @@
                 <p>Here's what's happening with your crops today.</p>
             </div>
             <div class="user-profile">
-                <button class="action-btn">
+                <button class="action-btn" onclick="showToast('Search pane opened')">
                     <i class="ph ph-magnifying-glass"></i>
                 </button>
-                <button class="action-btn">
+                <button class="action-btn" onclick="showToast('You have 3 new notifications')">
                     <i class="ph ph-bell"></i>
                     <span class="notification-badge"></span>
                 </button>
-                <img src="https://i.pravatar.cc/150?img=11" alt="User" class="avatar">
+                <img src="https://i.pravatar.cc/150?img=11" alt="User" class="avatar"
+                    onclick="showToast('Profile settings opened')">
             </div>
         </header>
 
-        <div class="dashboard-grid">
-            <!-- STATS CONTAINER -->
-            <div class="stats-container">
-                <div class="card stat-card">
-                    <div class="stat-icon green"><i class="ph-bold ph-plant"></i></div>
-                    <div class="stat-details">
-                        <h3>Scanned Crops</h3>
-                        <p>1,429</p>
-                        <span class="stat-trend up"><i class="ph-bold ph-trend-up"></i> +12% this week</span>
-                    </div>
-                </div>
-                <div class="card stat-card">
-                    <div class="stat-icon red"><i class="ph-bold ph-warning-circle"></i></div>
-                    <div class="stat-details">
-                        <h3>Active Threats</h3>
-                        <p>3</p>
-                        <span class="stat-trend down"><i class="ph-bold ph-trend-down"></i> Immediate action req.</span>
-                    </div>
-                </div>
-                <div class="card stat-card">
-                    <div class="stat-icon yellow"><i class="ph-bold ph-thermometer"></i></div>
-                    <div class="stat-details">
-                        <h3>Avg Temperature</h3>
-                        <p>26°C</p>
-                        <span class="stat-trend info"><i class="ph-bold ph-check-circle"></i> Optimal Range</span>
-                    </div>
-                </div>
-                <div class="card stat-card">
-                    <div class="stat-icon blue"><i class="ph-bold ph-drop"></i></div>
-                    <div class="stat-details">
-                        <h3>Soil Moisture</h3>
-                        <p>42%</p>
-                        <span class="stat-trend down"><i class="ph-bold ph-trend-down"></i> Slightly below target</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- HERO SCANNER -->
-            <div class="card scanner-card">
-                <div class="scanner-content">
-                    <div class="live-badge" style="animation: pulse-yellow 2s infinite;">
-                        <div class="pulse" style="width:8px; height:8px; background:var(--secondary); border-radius:50%;"></div> Live AI Monitoring Active
-                    </div>
-                    <h2>Instant Crop Diagnostics</h2>
-                    <p>Upload a photo of any plant leaf, stem, or fruit. Our advanced AI will identify diseases, pest damage, or nutrient deficiencies within seconds, with 97.3% accuracy.</p>
-                    <label class="upload-btn" onclick="triggerScan()">
-                        <i class="ph-bold ph-cloud-arrow-up"></i>
-                        Upload & Scan Photo Now
-                        <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleFile(this)"/>
-                    </label>
-                </div>
-                <div class="scanner-visual">
-                    <div class="scan-ring"></div>
-                    <div class="scan-ring-inner"></div>
-                    <i class="ph-fill ph-plant"></i>
-                </div>
-            </div>
-
-            <!-- AI ADVISOR CHAT -->
-            <div class="card ai-chat-card">
-                <div class="chat-header">
-                    <div class="chat-title"><i class="ph-bold ph-sparkle"></i> AI Crop Advisor</div>
-                    <span class="model-badge">GPT-4o Vision</span>
-                </div>
-                <div class="chat-body" id="chatArea">
-                    <div class="chat-msg ai">
-                        <div class="msg-av"><i class="ph-bold ph-leaf"></i></div>
-                        <div class="msg-text">Hello Aditya! I noticed the moisture in Field 1B dropped below 45%. Should we schedule irrigation for tomorrow morning?</div>
-                    </div>
-                    <div class="chat-msg user">
-                        <div class="msg-av"><i class="ph-bold ph-user"></i></div>
-                        <div class="msg-text">Yes, schedule it. Also, some wheat leaves in Field 2C have yellow spots with tiny dark centers.</div>
-                    </div>
-                    <div class="chat-msg ai" id="latestMsg">
-                        <div class="msg-av"><i class="ph-bold ph-leaf"></i></div>
-                        <div class="msg-text">Yellow spots with dark centers on wheat strongly indicate <strong>Septoria Tritici Blotch (STB)</strong>. <br><br>I recommend applying a fungicide (like Azoxystrobin) within the next 48 hours to prevent spread. Would you like me to upload a photo to confirm?</div>
-                    </div>
-                </div>
-                <div class="chat-input-area">
-                    <input type="text" id="chatInput" placeholder="Ask anything about your crops..." onkeydown="if(event.key==='Enter')sendChat()">
-                    <button class="chat-send-btn" onclick="sendChat()"><i class="ph-bold ph-paper-plane-right"></i></button>
-                </div>
-            </div>
-
-            <!-- PRIORITY ALERTS -->
-            <div class="card alerts-card">
-                <div class="card-header">
-                    <h3 class="card-title"><i class="ph-bold ph-bell-ringing"></i> Priority Alerts</h3>
-                    <a href="#" class="card-action">View All Warnings</a>
-                </div>
-                <div class="alert-list">
-                    <div class="alert-item critical">
-                        <div class="alert-icon"><i class="ph-bold ph-warning"></i></div>
-                        <div class="alert-content">
-                            <h4>Septoria Blotch Risk - Wheat Field 2C</h4>
-                            <p>High humidity and recent temperatures have created optimal conditions for fungal spread. Action required.</p>
+        <!-- DASHBOARD VIEW -->
+        <div id="view-Dashboard" class="page-view active-view">
+            <div class="dashboard-grid">
+                <!-- STATS CONTAINER -->
+                <div class="stats-container">
+                    <div class="card stat-card">
+                        <div class="stat-icon green"><i class="ph-bold ph-plant"></i></div>
+                        <div class="stat-details">
+                            <h3>Scanned Crops</h3>
+                            <p>1,429</p>
+                            <span class="stat-trend up"><i class="ph-bold ph-trend-up"></i> +12% this week</span>
                         </div>
                     </div>
-                    <div class="alert-item warning">
-                        <div class="alert-icon"><i class="ph-bold ph-clock"></i></div>
-                        <div class="alert-content">
-                            <h4>Irrigation Needed - Maize Field 1B</h4>
-                            <p>Soil moisture at 42%. Scheduled to fall below critical threshold by tomorrow afternoon.</p>
+                    <div class="card stat-card">
+                        <div class="stat-icon red"><i class="ph-bold ph-warning-circle"></i></div>
+                        <div class="stat-details">
+                            <h3>Active Threats</h3>
+                            <p>3</p>
+                            <span class="stat-trend down"><i class="ph-bold ph-trend-down"></i> Immediate action
+                                req.</span>
                         </div>
                     </div>
-                    <div class="alert-item info">
-                        <div class="alert-icon"><i class="ph-bold ph-calendar-check"></i></div>
-                        <div class="alert-content">
-                            <h4>Harvest Window Opening - Rice Field 4A</h4>
-                            <p>AI predicts grains will reach optimal moisture content (14%) in approximately 4 days.</p>
+                    <div class="card stat-card">
+                        <div class="stat-icon yellow"><i class="ph-bold ph-thermometer"></i></div>
+                        <div class="stat-details">
+                            <h3>Avg Temperature</h3>
+                            <p>26°C</p>
+                            <span class="stat-trend info"><i class="ph-bold ph-check-circle"></i> Optimal Range</span>
+                        </div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-icon blue"><i class="ph-bold ph-drop"></i></div>
+                        <div class="stat-details">
+                            <h3>Soil Moisture</h3>
+                            <p>42%</p>
+                            <span class="stat-trend down"><i class="ph-bold ph-trend-down"></i> Slightly below
+                                target</span>
                         </div>
                     </div>
                 </div>
+
+                <!-- HERO SCANNER -->
+                <div class="card scanner-card">
+                    <div class="scanner-content">
+                        <div class="live-badge" style="animation: pulse-yellow 2s infinite;">
+                            <div class="pulse"
+                                style="width:8px; height:8px; background:var(--secondary); border-radius:50%;"></div>
+                            Live AI Monitoring Active
+                        </div>
+                        <h2>Instant Crop Diagnostics</h2>
+                        <p>Upload a photo of any plant leaf, stem, or fruit. Our advanced AI will identify diseases,
+                            pest damage, or nutrient deficiencies within seconds, with 97.3% accuracy.</p>
+                        <label class="upload-btn" onclick="triggerScan()">
+                            <i class="ph-bold ph-cloud-arrow-up"></i>
+                            Upload & Scan Photo Now
+                            <input type="file" id="fileInput" accept="image/*" style="display:none"
+                                onchange="handleFile(this)" />
+                        </label>
+                    </div>
+                    <div class="scanner-visual">
+                        <div class="scan-ring"></div>
+                        <div class="scan-ring-inner"></div>
+                        <i class="ph-fill ph-plant"></i>
+                    </div>
+                </div>
+
+                <!-- AI ADVISOR CHAT -->
+                <div class="card ai-chat-card">
+                    <div class="chat-header">
+                        <div class="chat-title"><i class="ph-bold ph-sparkle"></i> AI Crop Advisor</div>
+                        <span class="model-badge">GPT-4o Vision</span>
+                    </div>
+                    <div class="chat-body" id="chatArea">
+                        <div class="chat-msg ai">
+                            <div class="msg-av"><i class="ph-bold ph-leaf"></i></div>
+                            <div class="msg-text">Hello Aditya! I noticed the moisture in Field 1B dropped below 45%.
+                                Should we schedule irrigation for tomorrow morning?</div>
+                        </div>
+                        <div class="chat-msg user">
+                            <div class="msg-av"><i class="ph-bold ph-user"></i></div>
+                            <div class="msg-text">Yes, schedule it. Also, some wheat leaves in Field 2C have yellow
+                                spots with tiny dark centers.</div>
+                        </div>
+                        <div class="chat-msg ai" id="latestMsg">
+                            <div class="msg-av"><i class="ph-bold ph-leaf"></i></div>
+                            <div class="msg-text">Yellow spots with dark centers on wheat strongly indicate
+                                <strong>Septoria Tritici Blotch (STB)</strong>. <br><br>I recommend applying a fungicide
+                                (like Azoxystrobin) within the next 48 hours to prevent spread. Would you like me to
+                                upload a photo to confirm?</div>
+                        </div>
+                    </div>
+                    <div class="chat-input-area">
+                        <input type="text" id="chatInput" placeholder="Ask anything about your crops..."
+                            onkeydown="if(event.key==='Enter')sendChat()">
+                        <button class="chat-send-btn" onclick="sendChat()"><i
+                                class="ph-bold ph-paper-plane-right"></i></button>
+                    </div>
+                </div>
+
+                <!-- PRIORITY ALERTS -->
+                <div class="card alerts-card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="ph-bold ph-bell-ringing"></i> Priority Alerts</h3>
+                        <a href="#" class="card-action"
+                            onclick="showToast('Viewing all warnings...'); return false;">View All Warnings</a>
+                    </div>
+                    <div class="alert-list">
+                        <div class="alert-item critical" onclick="showToast('Viewing alert details...')">
+                            <div class="alert-icon"><i class="ph-bold ph-warning"></i></div>
+                            <div class="alert-content">
+                                <h4>Septoria Blotch Risk - Wheat Field 2C</h4>
+                                <p>High humidity and recent temperatures have created optimal conditions for fungal
+                                    spread. Action required.</p>
+                            </div>
+                        </div>
+                        <div class="alert-item warning" onclick="showToast('Viewing alert details...')">
+                            <div class="alert-icon"><i class="ph-bold ph-clock"></i></div>
+                            <div class="alert-content">
+                                <h4>Irrigation Needed - Maize Field 1B</h4>
+                                <p>Soil moisture at 42%. Scheduled to fall below critical threshold by tomorrow
+                                    afternoon.</p>
+                            </div>
+                        </div>
+                        <div class="alert-item info" onclick="showToast('Viewing alert details...')">
+                            <div class="alert-icon"><i class="ph-bold ph-calendar-check"></i></div>
+                            <div class="alert-content">
+                                <h4>Harvest Window Opening - Rice Field 4A</h4>
+                                <p>AI predicts grains will reach optimal moisture content (14%) in approximately 4 days.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- OVERALL HEALTH -->
+                <div class="card health-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Yield & Health Score</h3>
+                        <i class="ph ph-dots-three" style="font-size:24px; color:var(--text-muted); cursor:pointer;"
+                            onclick="showToast('Opening Health Score options...')"></i>
+                    </div>
+
+                    <div class="health-ring-container">
+                        <svg width="200" height="200" viewBox="0 0 200 200">
+                            <circle cx="100" cy="100" r="85" fill="none" stroke="var(--border)" stroke-width="16" />
+                            <!-- Red Arc -->
+                            <circle cx="100" cy="100" r="85" fill="none" stroke="var(--danger)" stroke-width="16"
+                                stroke-dasharray="534" stroke-dashoffset="480" stroke-linecap="round"
+                                transform="rotate(-90 100 100)" />
+                            <!-- Yellow Arc -->
+                            <circle cx="100" cy="100" r="85" fill="none" stroke="var(--warning)" stroke-width="16"
+                                stroke-dasharray="534" stroke-dashoffset="400" stroke-linecap="round"
+                                transform="rotate(-30 100 100)" />
+                            <!-- Green Arc -->
+                            <circle cx="100" cy="100" r="85" fill="none" stroke="var(--primary)" stroke-width="16"
+                                stroke-dasharray="534" stroke-dashoffset="150" stroke-linecap="round"
+                                transform="rotate(50 100 100)" />
+                        </svg>
+                        <div class="health-score-text">
+                            <div class="score">84</div>
+                            <div class="label">Excellent</div>
+                        </div>
+                    </div>
+
+                    <div class="health-legend">
+                        <div class="legend-item">
+                            <div class="legend-val">78%</div>
+                            <div class="legend-label">
+                                <div class="legend-dot" style="background:var(--primary);"></div> Healthy
+                            </div>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-val">15%</div>
+                            <div class="legend-label">
+                                <div class="legend-dot" style="background:var(--warning);"></div> Stressed
+                            </div>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-val">7%</div>
+                            <div class="legend-label">
+                                <div class="legend-dot" style="background:var(--danger);"></div> Critical
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-
-            <!-- OVERALL HEALTH -->
-            <div class="card health-card">
-                <div class="card-header">
-                    <h3 class="card-title">Yield & Health Score</h3>
-                    <i class="ph ph-dots-three" style="font-size:24px; color:var(--text-muted); cursor:pointer;"></i>
-                </div>
-                
-                <div class="health-ring-container">
-                    <svg width="200" height="200" viewBox="0 0 200 200">
-                        <circle cx="100" cy="100" r="85" fill="none" stroke="var(--border)" stroke-width="16" />
-                        <!-- Red Arc -->
-                        <circle cx="100" cy="100" r="85" fill="none" stroke="var(--danger)" stroke-width="16" stroke-dasharray="534" stroke-dashoffset="480" stroke-linecap="round" transform="rotate(-90 100 100)" />
-                        <!-- Yellow Arc -->
-                        <circle cx="100" cy="100" r="85" fill="none" stroke="var(--warning)" stroke-width="16" stroke-dasharray="534" stroke-dashoffset="400" stroke-linecap="round" transform="rotate(-30 100 100)" />
-                        <!-- Green Arc -->
-                        <circle cx="100" cy="100" r="85" fill="none" stroke="var(--primary)" stroke-width="16" stroke-dasharray="534" stroke-dashoffset="150" stroke-linecap="round" transform="rotate(50 100 100)" />
-                    </svg>
-                    <div class="health-score-text">
-                        <div class="score">84</div>
-                        <div class="label">Excellent</div>
-                    </div>
-                </div>
-
-                <div class="health-legend">
-                    <div class="legend-item">
-                        <div class="legend-val">78%</div>
-                        <div class="legend-label"><div class="legend-dot" style="background:var(--primary);"></div> Healthy</div>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-val">15%</div>
-                        <div class="legend-label"><div class="legend-dot" style="background:var(--warning);"></div> Stressed</div>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-val">7%</div>
-                        <div class="legend-label"><div class="legend-dot" style="background:var(--danger);"></div> Critical</div>
-                    </div>
-                </div>
-            </div>
-
         </div>
+
+        <!-- OTHER VIEWS PLACEHOLDERS -->
+        <div id="view-MyFields" class="page-view">
+            <div class="fields-header">
+                <div>
+                    <h2 class="view-title">My Fields</h2>
+                    <p class="view-subtitle">Manage your agricultural plots and monitor their health.</p>
+                </div>
+                <button class="primary-btn" onclick="openModal('addFieldModal')"><i class="ph-bold ph-plus"></i> Add New
+                    Field</button>
+            </div>
+
+            <div class="fields-grid">
+                <!-- Map Container -->
+                <div class="card map-card">
+                    <div id="fieldsMap" style="height: 100%; width: 100%; z-index: 1;"></div>
+                </div>
+
+                <!-- Field Cards -->
+                <div class="card field-card">
+                    <div class="field-header">
+                        <div>
+                            <h4>Wheat Field 2C</h4>
+                            <span class="crop-tag">Wheat • 24 Acres</span>
+                        </div>
+                        <div class="health-badge warning"><i class="ph-bold ph-warning"></i> Risk</div>
+                    </div>
+                    <div class="field-stats">
+                        <div class="f-stat"><i class="ph-fill ph-drop text-info"></i> 45%</div>
+                        <div class="f-stat"><i class="ph-fill ph-thermometer text-warning"></i> 25°C</div>
+                        <div class="f-stat"><i class="ph-fill ph-plant text-primary"></i> Tillering</div>
+                    </div>
+                    <div class="field-action">
+                        <button class="secondary-btn w-full">View Details</button>
+                    </div>
+                </div>
+
+                <div class="card field-card">
+                    <div class="field-header">
+                        <div>
+                            <h4>Maize Field 1B</h4>
+                            <span class="crop-tag">Maize • 15 Acres</span>
+                        </div>
+                        <div class="health-badge ok"><i class="ph-bold ph-check-circle"></i> Healthy</div>
+                    </div>
+                    <div class="field-stats">
+                        <div class="f-stat"><i class="ph-fill ph-drop text-info"></i> 52%</div>
+                        <div class="f-stat"><i class="ph-fill ph-thermometer text-warning"></i> 26°C</div>
+                        <div class="f-stat"><i class="ph-fill ph-plant text-primary"></i> Vegetative</div>
+                    </div>
+                    <div class="field-action">
+                        <button class="secondary-btn w-full">View Details</button>
+                    </div>
+                </div>
+
+                <div class="card field-card">
+                    <div class="field-header">
+                        <div>
+                            <h4>Rice Field 4A</h4>
+                            <span class="crop-tag">Rice • 30 Acres</span>
+                        </div>
+                        <div class="health-badge critical"><i class="ph-bold ph-warning-circle"></i> Critical</div>
+                    </div>
+                    <div class="field-stats">
+                        <div class="f-stat"><i class="ph-fill ph-drop text-info"></i> 30%</div>
+                        <div class="f-stat"><i class="ph-fill ph-thermometer text-warning"></i> 28°C</div>
+                        <div class="f-stat"><i class="ph-fill ph-plant text-primary"></i> Maturation</div>
+                    </div>
+                    <div class="field-action">
+                        <button class="secondary-btn w-full">View Details</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-Diagnostics" class="page-view">
+            <div class="fields-header">
+                <div>
+                    <h2 class="view-title">Diagnostics & AI Scanner</h2>
+                    <p class="view-subtitle">Upload plant images to detect diseases and get instant treatment
+                        recommendations.</p>
+                </div>
+            </div>
+
+            <div class="fields-grid">
+                <!-- Scanner Area -->
+                <div class="card diag-scanner-card" style="grid-column: span 8;">
+                    <div class="upload-area" id="dropZone" onclick="document.getElementById('diagFileInput').click()">
+                        <div class="upload-icon-ring">
+                            <i class="ph-bold ph-upload-simple"></i>
+                        </div>
+                        <h3>Drag & drop a photo here</h3>
+                        <p>or click to browse from your device</p>
+                        <input type="file" id="diagFileInput" accept="image/*" style="display:none"
+                            onchange="startDiagnosticScan(this)">
+                    </div>
+
+                    <!-- Analyzing State -->
+                    <div class="analyzing-state" id="analyzingState"
+                        style="display: none; text-align: center; padding: 40px 0;">
+                        <div class="scan-ring"
+                            style="position: relative; width: 100px; height: 100px; margin: 0 auto 20px auto;">
+                            <div class="scan-ring" style="border-color: var(--primary); border-top-color: transparent;">
+                            </div>
+                            <i class="ph-bold ph-aperture"
+                                style="font-size: 40px; color: var(--primary); position: absolute; top:50%; left:50%; transform:translate(-50%,-50%);"></i>
+                        </div>
+                        <h3>AI is Analyzing Image...</h3>
+                        <p class="text-muted">Extracting visual features and cross-referencing with global pathology
+                            database.</p>
+                    </div>
+
+                    <!-- Result View -->
+                    <div class="scan-result" id="scanResult" style="display: none;">
+                        <div class="result-header">
+                            <div class="disease-info">
+                                <span class="health-badge critical" style="margin-bottom: 8px;">High Confidence:
+                                    94.2%</span>
+                                <h2>Late Blight (Phytophthora infestans)</h2>
+                                <p>Severity: <strong>High</strong> • Detected on: Tomato Leaf</p>
+                            </div>
+                            <img src="https://images.unsplash.com/photo-1592843997092-262118228373?w=300"
+                                alt="Scanned Leaf" class="scanned-img-thumb" id="scannedThumb">
+                        </div>
+
+                        <div class="recommendations">
+                            <h4 style="margin-bottom: 16px; font-size: 16px;">Recommended Actions</h4>
+                            <div class="rec-list">
+                                <div class="rec-item">
+                                    <div class="rec-icon" style="background: rgba(59,130,246,0.1); color: var(--info);">
+                                        <i class="ph-fill ph-flask"></i></div>
+                                    <div>
+                                        <h5>Apply Fungicide (Immediate)</h5>
+                                        <p>Use a fungicide containing chlorothalonil or copper-based compounds.</p>
+                                    </div>
+                                </div>
+                                <div class="rec-item">
+                                    <div class="rec-icon"
+                                        style="background: rgba(16,185,129,0.1); color: var(--primary);"><i
+                                            class="ph-fill ph-leaf"></i></div>
+                                    <div>
+                                        <h5>Organic Alternative</h5>
+                                        <p>Apply biological control agents like Bacillus subtilis (strain QST 713).</p>
+                                    </div>
+                                </div>
+                                <div class="rec-item">
+                                    <div class="rec-icon"
+                                        style="background: rgba(245,158,11,0.1); color: var(--warning);"><i
+                                            class="ph-fill ph-sun"></i></div>
+                                    <div>
+                                        <h5>Cultural Control</h5>
+                                        <p>Improve air circulation by pruning and avoid overhead irrigation.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 24px; display: flex; gap: 12px;">
+                            <button class="primary-btn" onclick="resetDiagnostic()">Scan Another</button>
+                            <button class="secondary-btn"
+                                style="background: var(--surface-solid); border: 1px solid var(--border);"
+                                onclick="showToast('Added to field log')">Save to Field Log</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scan History -->
+                <div class="card scan-history-card" style="grid-column: span 4;">
+                    <h3 style="font-size: 18px; margin-bottom: 20px;">Recent Scans</h3>
+                    <div class="history-list">
+                        <div class="history-item">
+                            <div class="hist-img"
+                                style="background: url('https://images.unsplash.com/photo-1592843997092-262118228373?w=100') center/cover;">
+                            </div>
+                            <div class="hist-details">
+                                <h5>Wheat - Yellow Spots</h5>
+                                <p>Septoria Blotch • 2 hrs ago</p>
+                            </div>
+                            <i class="ph-bold ph-caret-right text-muted"></i>
+                        </div>
+                        <div class="history-item">
+                            <div class="hist-img"
+                                style="background: url('https://images.unsplash.com/photo-1592843997092-262118228373?w=100') center/cover; filter: grayscale(1);">
+                            </div>
+                            <div class="hist-details">
+                                <h5>Maize - Healthy</h5>
+                                <p>No issues • Yesterday</p>
+                            </div>
+                            <i class="ph-bold ph-caret-right text-muted"></i>
+                        </div>
+                        <div class="history-item">
+                            <div class="hist-img"
+                                style="background: url('https://images.unsplash.com/photo-1592843997092-262118228373?w=100') center/cover; filter: sepia(1);">
+                            </div>
+                            <div class="hist-details">
+                                <h5>Rice - Brown Spot</h5>
+                                <p>Bipolaris oryzae • 3 days ago</p>
+                            </div>
+                            <i class="ph-bold ph-caret-right text-muted"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-Community" class="page-view">
+            <div class="fields-header">
+                <div>
+                    <h2 class="view-title">Farmer's Network</h2>
+                    <p class="view-subtitle">Connect, share experiences, and get advice from experts and peers.</p>
+                </div>
+                <button class="primary-btn"><i class="ph-bold ph-pencil-simple"></i> Create Post</button>
+            </div>
+
+            <div class="fields-grid">
+                <!-- Categories Sidebar -->
+                <div class="card" style="grid-column: span 3; padding: 20px;">
+                    <h4 style="margin-bottom: 16px; font-size: 16px;">Topics</h4>
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <a href="#" class="nav-item active"
+                            style="padding: 10px; background: rgba(16, 185, 129, 0.1); color: var(--primary-dark); font-weight: 600; border-radius: var(--radius-md); text-decoration: none;">All
+                            Discussions</a>
+                        <a href="#" class="nav-item"
+                            style="padding: 10px; color: var(--text-main); font-weight: 500; text-decoration: none;">Pest
+                            Issues</a>
+                        <a href="#" class="nav-item"
+                            style="padding: 10px; color: var(--text-main); font-weight: 500; text-decoration: none;">Irrigation
+                            & Water</a>
+                        <a href="#" class="nav-item"
+                            style="padding: 10px; color: var(--text-main); font-weight: 500; text-decoration: none;">Fertilizers
+                            & Soil</a>
+                        <a href="#" class="nav-item"
+                            style="padding: 10px; color: var(--text-main); font-weight: 500; text-decoration: none;">Market
+                            Prices</a>
+                    </div>
+                </div>
+
+                <!-- Feed Area -->
+                <div style="grid-column: span 6; display: flex; flex-direction: column; gap: 24px;">
+                    <!-- Post 1 -->
+                    <div class="card" style="padding: 24px;">
+                        <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+                            <img src="https://i.pravatar.cc/150?img=33" alt="Avatar"
+                                style="width: 48px; height: 48px; border-radius: 50%;">
+                            <div>
+                                <h4
+                                    style="font-size: 16px; font-weight: 600; color: var(--text-main); display:flex; align-items: center; gap: 6px;">
+                                    ANUP KUMAR <span
+                                        style="background: var(--warning); color: white; padding: 2px 6px; border-radius: 12px; font-size: 10px;">Expert
+                                        Agronomist</span></h4>
+                                <p style="font-size: 13px; color: var(--text-muted);">2 hours ago • Pest Issues</p>
+                            </div>
+                        </div>
+                        <p style="margin-bottom: 16px; line-height: 1.6;">I've been seeing a lot of questions about
+                            early stage Fall Armyworm on maize. Remember that early detection is critical. Look for
+                            window-pane damage on leaves. Here is a picture from my field today after applying
+                            Spinetoram.</p>
+                        <div
+                            style="width: 100%; border-radius: var(--radius-md); margin-bottom: 16px; height: 250px; background: url('https://images.unsplash.com/photo-1592843997092-262118228373?w=600') center/cover;">
+                        </div>
+                        <div style="display: flex; gap: 16px; border-top: 1px solid var(--border); padding-top: 16px;">
+                            <button class="secondary-btn" style="background: transparent; color: var(--text-muted);"><i
+                                    class="ph-bold ph-thumbs-up"></i> 325 Likes</button>
+                            <button class="secondary-btn" style="background: transparent; color: var(--text-muted);"><i
+                                    class="ph-bold ph-chat-circle"></i> 18 Comments</button>
+                            <button class="secondary-btn"
+                                style="background: transparent; color: var(--text-muted); margin-left: auto;"><i
+                                    class="ph-bold ph-share-network"></i> Share</button>
+                        </div>
+                    </div>
+
+                    <!-- Post 2 -->
+                    <div class="card" style="padding: 24px;">
+                        <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+                            <img src="https://i.pravatar.cc/150?img=12" alt="Avatar"
+                                style="width: 48px; height: 48px; border-radius: 50%;">
+                            <div>
+                                <h4 style="font-size: 16px; font-weight: 600; color: var(--text-main);">TEJ PRATAP 
+                                </h4>
+                                <p style="font-size: 13px; color: var(--text-muted);">5 hours ago • Irrigation & Water
+                                </p>
+                            </div>
+                        </div>
+                        <p style="margin-bottom: 16px; line-height: 1.6;">Does anyone have a good schedule for drip
+                            irrigation on sandy-loam soil for tomatoes? Trying to optimize my water usage this season.
+                        </p>
+                        <div style="display: flex; gap: 16px; border-top: 1px solid var(--border); padding-top: 16px;">
+                            <button class="secondary-btn" style="background: transparent; color: var(--text-muted);"><i
+                                    class="ph-bold ph-thumbs-up"></i> 12 Likes</button>
+                            <button class="secondary-btn" style="background: transparent; color: var(--text-muted);"><i
+                                    class="ph-bold ph-chat-circle"></i> 4 Comments</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trending / Suggestions -->
+                <div style="grid-column: span 3; display: flex; flex-direction: column; gap: 24px;">
+                    <div class="card" style="padding: 20px;">
+                        <h4 style="margin-bottom: 16px; font-size: 16px;"><i
+                                class="ph-bold ph-trend-up text-primary"></i> Trending Topics</h4>
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <p style="font-size: 14px; font-weight: 500; cursor:pointer; color: var(--text-main);">
+                                #WheatRustControl <span
+                                    style="color: var(--text-muted); font-size:12px; display:block;">1.2k posts</span>
+                            </p>
+                            <p style="font-size: 14px; font-weight: 500; cursor:pointer; color: var(--text-main);">
+                                #OrganicFarming <span
+                                    style="color: var(--text-muted); font-size:12px; display:block;">845 posts</span>
+                            </p>
+                            <p style="font-size: 14px; font-weight: 500; cursor:pointer; color: var(--text-main);">
+                                #MonsoonPrep <span style="color: var(--text-muted); font-size:12px; display:block;">530
+                                    posts</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-Reports" class="page-view">
+            <div class="fields-header">
+                <div>
+                    <h2 class="view-title">Reports & Analytics</h2>
+                    <p class="view-subtitle">Track your field metrics over time and get predictive insights.</p>
+                </div>
+                <div style="display: flex; gap: 12px;">
+                    <select class="form-input" style="width: auto; padding: 10px 16px;">
+                        <option>Last 7 Days</option>
+                        <option>Last 30 Days</option>
+                        <option>This Season</option>
+                    </select>
+                    <button class="primary-btn"><i class="ph-bold ph-download-simple"></i> Export PDF</button>
+                </div>
+            </div>
+
+            <div class="fields-grid">
+                <!-- AI Insights Card -->
+                <div class="card"
+                    style="grid-column: span 12; display: flex; align-items: flex-start; gap: 20px; background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(16,185,129,0.02)); border-left: 4px solid var(--primary);">
+                    <div
+                        style="width: 48px; height: 48px; border-radius: 12px; background: white; display: flex; align-items: center; justify-content: center; font-size: 24px; color: var(--primary); flex-shrink: 0; box-shadow: var(--shadow-sm);">
+                        <i class="ph-bold ph-sparkle"></i>
+                    </div>
+                    <div>
+                        <h4 style="font-size: 18px; font-weight: 700; color: var(--text-main); margin-bottom: 8px;">
+                            Weekly AI Insights</h4>
+                        <p style="font-size: 15px; color: var(--text-main); line-height: 1.6; margin-bottom: 12px;">
+                            Based on current soil evaporation rates and weather forecasts, <strong>Maize Field
+                                1B</strong> will reach critical moisture levels on Thursday. I highly recommend
+                            scheduling irrigation within the next 48 hours to prevent yield loss. Additionally, your
+                            overall crop health score has improved by 4% compared to this time last month.</p>
+                        <button class="secondary-btn">Schedule Irrigation</button>
+                    </div>
+                </div>
+
+                <!-- Temperature Chart -->
+                <div class="card" style="grid-column: span 6;">
+                    <h4 style="font-size: 16px; font-weight: 600; color: var(--text-main); margin-bottom: 20px;">Average
+                        Temperature Trends</h4>
+                    <div style="height: 300px; width: 100%;">
+                        <canvas id="tempChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Moisture Chart -->
+                <div class="card" style="grid-column: span 6;">
+                    <h4 style="font-size: 16px; font-weight: 600; color: var(--text-main); margin-bottom: 20px;">Soil
+                        Moisture Levels</h4>
+                    <div style="height: 300px; width: 100%;">
+                        <canvas id="moistureChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-Settings" class="page-view">
+            <div class="fields-header">
+                <div>
+                    <h2 class="view-title">Settings</h2>
+                    <p class="view-subtitle">Manage your account preferences, notifications, and application settings.</p>
+                </div>
+            </div>
+
+            <div class="settings-layout">
+                <!-- Sidebar -->
+                <div class="settings-sidebar">
+                    <div class="settings-menu">
+                        <button class="settings-tab active" id="tab-btn-profile" onclick="switchSettingsTab('profile')">
+                            <i class="ph-bold ph-user"></i> Profile
+                        </button>
+                        <button class="settings-tab" id="tab-btn-notifications" onclick="switchSettingsTab('notifications')">
+                            <i class="ph-bold ph-bell"></i> Notifications
+                        </button>
+                        <button class="settings-tab" id="tab-btn-farm" onclick="switchSettingsTab('farm')">
+                            <i class="ph-bold ph-plant"></i> Farm Preferences
+                        </button>
+                        <button class="settings-tab" id="tab-btn-security" onclick="switchSettingsTab('security')">
+                            <i class="ph-bold ph-lock-key"></i> Security
+                        </button>
+                        <button class="settings-tab" id="tab-btn-appearance" onclick="switchSettingsTab('appearance')">
+                            <i class="ph-bold ph-palette"></i> Appearance
+                        </button>
+                        <button class="settings-tab" id="tab-btn-integrations" onclick="switchSettingsTab('integrations')">
+                            <i class="ph-bold ph-plug"></i> Integrations
+                        </button>
+                        <button class="settings-tab" id="tab-btn-privacy" onclick="switchSettingsTab('privacy')">
+                            <i class="ph-bold ph-shield-check"></i> Data & Privacy
+                        </button>
+                        <button class="settings-tab" id="tab-btn-support" onclick="switchSettingsTab('support')">
+                            <i class="ph-bold ph-lifebuoy"></i> Help & Support
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Content Area -->
+                <div class="settings-content-wrapper">
+                    <!-- 1. Profile Settings -->
+                    <div id="settings-profile" class="settings-section active">
+                        <h3 class="settings-section-title">Profile Settings</h3>
+                        
+                        <div style="display: flex; gap: 24px; align-items: center; margin-bottom: 32px;">
+                            <img src="https://i.pravatar.cc/150?img=11" alt="Profile" style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--primary-light); object-fit: cover;">
+                            <div>
+                                <button class="primary-btn" style="margin-bottom: 8px;"><i class="ph-bold ph-upload-simple"></i> Upload New Photo</button>
+                                <p class="setting-desc" style="margin: 0;">JPG, GIF or PNG. Max size of 800K</p>
+                            </div>
+                        </div>
+
+                        <div class="setting-group">
+                            <label>Full Name</label>
+                            <input type="text" class="form-input" value="Aditya kumar">
+                        </div>
+                        <div class="setting-group">
+                            <label>Email Address</label>
+                            <input type="email" class="form-input" value="aditya.s@example.com">
+                        </div>
+                        <div class="setting-group">
+                            <label>Phone Number</label>
+                            <input type="tel" class="form-input" value="+91 98765 43210">
+                        </div>
+                        <div class="setting-group">
+                            <label>Language</label>
+                            <select class="form-input">
+                                <option>English (US)</option>
+                                <option>Hindi (हिंदी)</option>
+                                <option>Marathi (मराठी)</option>
+                            </select>
+                        </div>
+                        <button class="primary-btn" onclick="showToast('Profile updated successfully!')">Update Profile</button>
+                    </div>
+
+                    <!-- 2. Notification Settings -->
+                    <div id="settings-notifications" class="settings-section">
+                        <h3 class="settings-section-title">Notification Preferences</h3>
+                        
+                        <div class="setting-row">
+                            <div class="setting-label-col">
+                                <h4>Weather Alerts</h4>
+                                <p class="setting-desc" style="margin: 0;">Get notified about extreme weather conditions.</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-label-col">
+                                <h4>Crop Disease Alerts</h4>
+                                <p class="setting-desc" style="margin: 0;">Receive AI-driven disease spread warnings in your area.</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-label-col">
+                                <h4>Soil Moisture Alerts</h4>
+                                <p class="setting-desc" style="margin: 0;">Get notified when field moisture falls below critical levels.</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-label-col">
+                                <h4>Weekly Reports</h4>
+                                <p class="setting-desc" style="margin: 0;">Receive a summary of your farm's performance every week.</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- 3. Farm Preferences -->
+                    <div id="settings-farm" class="settings-section">
+                        <h3 class="settings-section-title">Farm Preferences</h3>
+                        <div class="setting-group">
+                            <label>Default Crop Type</label>
+                            <select class="form-input">
+                                <option>Wheat</option>
+                                <option>Rice (Paddy)</option>
+                                <option>Maize</option>
+                                <option>Sugarcane</option>
+                            </select>
+                        </div>
+                        <div class="setting-group">
+                            <label>Farm Size Unit</label>
+                            <select class="form-input">
+                                <option>Acres</option>
+                                <option>Hectares</option>
+                                <option>Square Meters</option>
+                            </select>
+                        </div>
+                        <div class="setting-group">
+                            <label>Location</label>
+                            <div style="display: flex; gap: 12px;">
+                                <input type="text" class="form-input" value="Punjab, India" style="flex: 1;">
+                                <button class="secondary-btn" style="border: 1px solid var(--border);"><i class="ph-bold ph-crosshair"></i> Auto-Detect</button>
+                            </div>
+                        </div>
+                        <div class="setting-group">
+                            <label>Irrigation Preference</label>
+                            <select class="form-input">
+                                <option>Drip Irrigation</option>
+                                <option>Sprinkler</option>
+                                <option>Manual / Rain-fed</option>
+                            </select>
+                        </div>
+                        <button class="primary-btn" onclick="showToast('Farm preferences saved!')">Save Preferences</button>
+                    </div>
+
+                    <!-- 4. Security Settings -->
+                    <div id="settings-security" class="settings-section">
+                        <h3 class="settings-section-title">Security Settings</h3>
+                        <div class="setting-group">
+                            <label>Current Password</label>
+                            <input type="password" class="form-input" placeholder="Enter current password">
+                        </div>
+                        <div class="setting-group">
+                            <label>New Password</label>
+                            <input type="password" class="form-input" placeholder="Enter new password">
+                        </div>
+                        <div class="setting-group" style="margin-bottom: 32px;">
+                            <label>Confirm New Password</label>
+                            <input type="password" class="form-input" placeholder="Confirm new password">
+                            <div style="margin-top: 12px;">
+                                <button class="primary-btn" onclick="showToast('Password updated successfuly!')">Update Password</button>
+                            </div>
+                        </div>
+
+                        <div class="setting-row">
+                            <div class="setting-label-col">
+                                <h4>Two-Factor Authentication (2FA)</h4>
+                                <p class="setting-desc" style="margin: 0;">Add an extra layer of security to your account.</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border);">
+                            <button class="danger-btn" onclick="showToast('Logged out of all other devices.')"><i class="ph-bold ph-sign-out"></i> Logout from all devices</button>
+                        </div>
+                    </div>
+
+                    <!-- 5. Appearance Settings -->
+                    <div id="settings-appearance" class="settings-section">
+                        <h3 class="settings-section-title">Appearance Settings</h3>
+                        <div class="setting-row">
+                            <div class="setting-label-col">
+                                <h4>Dark Mode</h4>
+                                <p class="setting-desc" style="margin: 0;">Switch between light and dark themes.</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" onchange="showToast('Theme preferences are being applied.')">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-group" style="margin-top: 24px;">
+                            <label>Theme Color</label>
+                            <div style="display: flex; gap: 16px; margin-top: 12px;">
+                                <div style="width: 40px; height: 40px; border-radius: 50%; background: #059669; border: 3px solid #10b981; cursor: pointer; box-shadow: var(--shadow-md);"></div>
+                                <div style="width: 40px; height: 40px; border-radius: 50%; background: #3b82f6; cursor: pointer;"></div>
+                                <div style="width: 40px; height: 40px; border-radius: 50%; background: #f59e0b; cursor: pointer;"></div>
+                                <div style="width: 40px; height: 40px; border-radius: 50%; background: #6366f1; cursor: pointer;"></div>
+                            </div>
+                        </div>
+                        <div class="setting-group" style="margin-top: 32px;">
+                            <label>Font Size</label>
+                            <select class="form-input">
+                                <option>Small</option>
+                                <option selected>Medium (Default)</option>
+                                <option>Large</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- 6. Integration Settings -->
+                    <div id="settings-integrations" class="settings-section">
+                        <h3 class="settings-section-title">Integration & API</h3>
+                        <div class="setting-row">
+                            <div class="setting-label-col">
+                                <h4>Weather API Connection</h4>
+                                <p class="setting-desc" style="margin: 0;">Connect to localized hyper-accurate weather models.</p>
+                                <button class="secondary-btn" style="border: 1px solid var(--border); margin-top: 8px; font-size: 13px;"><i class="ph-bold ph-link"></i> Connected (OpenWeather)</button>
+                            </div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-label-col">
+                                <h4>IoT Sensor Integration</h4>
+                                <p class="setting-desc" style="margin: 0;">Sync external soil moisture & temperature probes.</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-label-col">
+                                <h4>GPS Tracking</h4>
+                                <p class="setting-desc" style="margin: 0;">Allow precise geolocation mapping of your fields.</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- 7. Data & Privacy -->
+                    <div id="settings-privacy" class="settings-section">
+                        <h3 class="settings-section-title">Data & Privacy</h3>
+                        <div class="setting-row">
+                            <div class="setting-label-col">
+                                <h4>Allow Data Sharing</h4>
+                                <p class="setting-desc" style="margin: 0;">Share anonymized data to improve AI diagnostic accuracy.</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div style="margin-top: 32px; display: flex; flex-direction: column; gap: 16px; align-items: flex-start;">
+                            <button class="secondary-btn" style="border: 1px solid var(--border); background: var(--surface-solid);"><i class="ph-bold ph-download-simple"></i> Download My Data</button>
+                            <button class="danger-btn"><i class="ph-bold ph-trash"></i> Delete Account</button>
+                        </div>
+                    </div>
+
+                    <!-- 8. Help & Support -->
+                    <div id="settings-support" class="settings-section">
+                        <h3 class="settings-section-title">Help & Support</h3>
+                        
+                        <div class="setting-group">
+                            <label>Frequently Asked Questions</label>
+                            <div style="border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden;">
+                                <div style="padding: 16px; border-bottom: 1px solid var(--border); background: var(--bg); font-weight: 600; display: flex; justify-content: space-between; cursor: pointer;" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'block' : 'none';">
+                                    How do I calibrate my soil sensors? <i class="ph-bold ph-caret-down"></i>
+                                </div>
+                                <div style="padding: 16px; font-size: 14px; color: var(--text-muted);">
+                                    To calibrate your soil sensors, ensure they are placed at least 6 inches deep and run the synchronization process from the Integrations tab...
+                                </div>
+                                <div style="padding: 16px; border-bottom: 1px solid var(--border); border-top: 1px solid var(--border); background: var(--bg); font-weight: 600; display: flex; justify-content: space-between; cursor: pointer;">
+                                    Why is my field health showing as critical? <i class="ph-bold ph-caret-right text-muted"></i>
+                                </div>
+                                <div style="padding: 16px; background: var(--bg); font-weight: 600; display: flex; justify-content: space-between; cursor: pointer;">
+                                    How do I export my yield reports? <i class="ph-bold ph-caret-right text-muted"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 16px; margin-top: 32px;">
+                            <button class="primary-btn"><i class="ph-bold ph-envelope-simple"></i> Contact Support</button>
+                            <button class="secondary-btn" style="border: 1px solid var(--border); background: var(--surface-solid);" onclick="showToast('Bug reporter opened')"><i class="ph-bold ph-bug"></i> Report a Bug</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </main>
 
+    <!-- Add Field Modal -->
+    <div class="modal-overlay" id="addFieldModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Field</h3>
+                <button class="close-btn" onclick="closeModal('addFieldModal')"><i class="ph-bold ph-x"></i></button>
+            </div>
+            <div class="form-group">
+                <label>Field Name</label>
+                <input type="text" class="form-input" placeholder="e.g. North Plot B" />
+            </div>
+            <div class="form-group">
+                <label>Crop Type</label>
+                <select class="form-input">
+                    <option>Wheat</option>
+                    <option>Corn / Maize</option>
+                    <option>Rice</option>
+                    <option>Soybean</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Area (Acres)</label>
+                <input type="number" class="form-input" placeholder="0.00" />
+            </div>
+            <div class="modal-footer">
+                <button class="secondary-btn" style="background: var(--bg); color: var(--text-main);"
+                    onclick="closeModal('addFieldModal')">Cancel</button>
+                <button class="primary-btn" onclick="saveField()">Save Field</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast">Notification</div>
+
     <script>
+        // UI Interactions
+        let toastTimeout;
+        function showToast(message) {
+            const toast = document.getElementById("toast");
+            toast.innerText = message;
+            toast.classList.add("show");
+
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove("show");
+            }, 3000);
+        }
+
+        let fieldsMap = null;
+        function initMap() {
+            if (fieldsMap) {
+                fieldsMap.invalidateSize();
+                return;
+            }
+            if (!document.getElementById('fieldsMap')) return;
+
+            setTimeout(() => {
+                fieldsMap = L.map('fieldsMap').setView([28.6139, 77.2090], 13);
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                    maxZoom: 19,
+                    attribution: '&copy; <a href="https://carto.com/">carto.com</a> contributors'
+                }).addTo(fieldsMap);
+
+                const wheatField = [
+                    [28.61, 77.20], [28.62, 77.20], [28.62, 77.21], [28.61, 77.21]
+                ];
+                L.polygon(wheatField, { color: '#f59e0b', fillColor: '#fbbf24', fillOpacity: 0.5 }).addTo(fieldsMap).bindPopup("<b>Wheat Field 2C</b><br>Risk Detected");
+
+                const riceField = [
+                    [28.63, 77.22], [28.64, 77.22], [28.64, 77.23], [28.63, 77.23]
+                ];
+                L.polygon(riceField, { color: '#ef4444', fillColor: '#f87171', fillOpacity: 0.5 }).addTo(fieldsMap).bindPopup("<b>Rice Field 4A</b><br>Critical - Moisture Low");
+
+                const maizeField = [
+                    [28.60, 77.23], [28.61, 77.23], [28.61, 77.24], [28.60, 77.24]
+                ];
+                L.polygon(maizeField, { color: '#059669', fillColor: '#10b981', fillOpacity: 0.5 }).addTo(fieldsMap).bindPopup("<b>Maize Field 1B</b><br>Healthy");
+
+                fieldsMap.fitBounds([wheatField, riceField, maizeField]);
+            }, 100);
+        }
+
+        function setActiveNav(event, element, viewId) {
+            event.preventDefault();
+
+            // 1. Update Active Navigation Link
+            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+            element.classList.add('active');
+
+            // 2. Hide all views
+            document.querySelectorAll('.page-view').forEach(view => {
+                view.classList.remove('active-view');
+            });
+
+            // 3. Show targeted view with animation
+            const targetView = document.getElementById('view-' + viewId);
+            if (targetView) {
+                targetView.classList.add('active-view');
+                if (viewId === 'MyFields') initMap();
+                if (viewId === 'Reports') setTimeout(initCharts, 100);
+            }
+        }
+
+        let chartsInit = false;
+        function initCharts() {
+            if (chartsInit) return;
+            chartsInit = true;
+
+            Chart.defaults.font.family = "'Outfit', sans-serif";
+            Chart.defaults.color = "#64748b";
+
+            // Temperature Chart
+            const ctxTemp = document.getElementById('tempChart').getContext('2d');
+            new Chart(ctxTemp, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Temperature (°C)',
+                        data: [24, 25, 27, 26, 28, 29, 26],
+                        borderColor: '#f59e0b',
+                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#f59e0b',
+                        pointBorderWidth: 2,
+                        pointRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: false, suggestedMin: 20, grid: { color: 'rgba(148, 163, 184, 0.1)' } }, x: { grid: { display: false } } }
+                }
+            });
+
+            // Moisture Chart
+            const ctxMoist = document.getElementById('moistureChart').getContext('2d');
+            new Chart(ctxMoist, {
+                type: 'bar',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Soil Moisture (%)',
+                        data: [65, 60, 52, 45, 42, 55, 62],
+                        backgroundColor: '#3b82f6',
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true, max: 100, grid: { color: 'rgba(148, 163, 184, 0.1)' } }, x: { grid: { display: false } } }
+                }
+            });
+        }
+
+        // Modal Logic
+        function openModal(id) {
+            const modal = document.getElementById(id);
+            if (modal) modal.classList.add('show');
+        }
+        function closeModal(id) {
+            const modal = document.getElementById(id);
+            if (modal) modal.classList.remove('show');
+        }
+        function saveField() {
+            closeModal('addFieldModal');
+            showToast('New field saved successfully!');
+        }
+
+        // Diagnostics Logic
+        function startDiagnosticScan(input) {
+            if (!input.files || !input.files[0]) return;
+
+            // Read file for thumbnail
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('scannedThumb').src = e.target.result;
+            }
+            reader.readAsDataURL(input.files[0]);
+
+            // UI state changes
+            document.getElementById('dropZone').style.display = 'none';
+            document.getElementById('analyzingState').style.display = 'block';
+
+            // Simulate AI delay
+            setTimeout(() => {
+                document.getElementById('analyzingState').style.display = 'none';
+                document.getElementById('scanResult').style.display = 'block';
+                // Trigger reflow for animation
+                const resultBlock = document.getElementById('scanResult');
+                resultBlock.style.animation = 'none';
+                void resultBlock.offsetWidth;
+                resultBlock.style.animation = 'fadeInUp 0.6s ease-out';
+            }, 2500);
+        }
+
+        function resetDiagnostic() {
+            document.getElementById('diagFileInput').value = "";
+            document.getElementById('scanResult').style.display = 'none';
+            const drop = document.getElementById('dropZone');
+            drop.style.display = 'block';
+            drop.style.animation = 'none'; void drop.offsetWidth; drop.style.animation = 'fadeIn 0.4s ease-out';
+        }
+
         // AI Chat Functionality
         const aiReplies = [
             "I'm analyzing that pattern now. It looks manageable if treated early.",
@@ -584,7 +2804,7 @@
             const input = document.getElementById('chatInput');
             const area = document.getElementById('chatArea');
             const text = input.value.trim();
-            if(!text) return;
+            if (!text) return;
 
             // User Message
             const userMsg = document.createElement('div');
@@ -592,7 +2812,7 @@
             userMsg.innerHTML = `<div class="msg-av"><i class="ph-bold ph-user"></i></div><div class="msg-text">${escapeHtml(text)}</div>`;
             area.appendChild(userMsg);
             input.value = '';
-            
+
             // Scroll logic
             requestAnimationFrame(() => area.scrollTop = area.scrollHeight);
 
@@ -602,7 +2822,7 @@
             typing.id = 'typingIndicator';
             typing.innerHTML = `<div class="msg-av"><i class="ph-bold ph-leaf"></i></div>
                                 <div class="msg-text" style="color:var(--text-muted); font-style:italic;"><i class="ph ph-dots-three" style="animation: pulse 1s infinite alternate;"></i> Analyzing...</div>`;
-            
+
             setTimeout(() => {
                 area.appendChild(typing);
                 requestAnimationFrame(() => area.scrollTop = area.scrollHeight);
@@ -611,8 +2831,8 @@
             // AI Reply
             setTimeout(() => {
                 const indicator = document.getElementById('typingIndicator');
-                if(indicator) indicator.remove();
-                
+                if (indicator) indicator.remove();
+
                 const aiMsg = document.createElement('div');
                 aiMsg.className = 'chat-msg ai';
                 const reply = aiReplies[Math.floor(Math.random() * aiReplies.length)];
@@ -623,7 +2843,7 @@
         }
 
         function escapeHtml(str) {
-            return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+            return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         }
 
         // File Scan Simulation
@@ -632,16 +2852,16 @@
         }
 
         function handleFile(input) {
-            if(!input.files || !input.files[0]) return;
+            if (!input.files || !input.files[0]) return;
             const btn = document.querySelector('.upload-btn');
             const originalText = btn.innerHTML;
-            
+
             btn.innerHTML = `<i class="ph-bold ph-spinner" style="animation: spin 1s linear infinite;"></i> Analyzing Image...`;
-            
+
             setTimeout(() => {
                 btn.innerHTML = `<i class="ph-bold ph-warning-circle"></i> Infection Detected: Septoria Blotch`;
                 btn.style.color = '#ef4444'; // Red alert text
-                
+
                 setTimeout(() => {
                     btn.innerHTML = originalText;
                     btn.style.color = '';
@@ -654,6 +2874,28 @@
             const chatArea = document.getElementById('chatArea');
             chatArea.scrollTop = chatArea.scrollHeight;
         }
+
+        // Settings Tab Switcher
+        function switchSettingsTab(tabId) {
+            // Remove active class from all tabs
+            document.querySelectorAll('.settings-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            // Hide all sections
+            document.querySelectorAll('.settings-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Add active to selected tab and section
+            const targetTab = document.getElementById('tab-btn-' + tabId);
+            const targetSection = document.getElementById('settings-' + tabId);
+            
+            if (targetTab && targetSection) {
+                targetTab.classList.add('active');
+                targetSection.classList.add('active');
+            }
+        }
     </script>
 </body>
+
 </html>
