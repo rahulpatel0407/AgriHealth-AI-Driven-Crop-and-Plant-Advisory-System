@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  font-family: "Source Sans 3", sans-serif;
+  background-color: #f7f3ee;
+}
+
+.hero-bg {
+  background: radial-gradient(circle at top left, #e6d9c9, #f7f3ee 55%, #cde8c1);
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(8px);
+}
+
+@keyframes softPulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+}
+
+.pulse-ring {
+  animation: softPulse 2.2s ease-in-out infinite;
+}

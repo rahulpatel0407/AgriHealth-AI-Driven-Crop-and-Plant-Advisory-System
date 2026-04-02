@@ -1,0 +1,14 @@
+version: "3.9"
+
+services:
+  backend:
+    image: "{REPLACE_WITH_PROD_URL}/agrihealth-backend:latest"
+    ports:
+      - "8000:8000"
+    env_file:
+      - ../backend/.env
+
+  frontend:
+    image: "{REPLACE_WITH_PROD_URL}/agrihealth-frontend:latest"
+    ports:
+      - "80:5173"

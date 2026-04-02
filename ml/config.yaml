@@ -1,0 +1,4 @@
+num_classes: 38
+epochs: 5
+batch_size: 32
+seed: 42
